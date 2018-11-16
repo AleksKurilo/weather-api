@@ -1,0 +1,3 @@
+rootProject.name = 'weather-api'
+include 'weather-station-library'
+project(':weather-station-library').projectDir = new File('../weather-station-library')
