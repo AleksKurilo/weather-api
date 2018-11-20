@@ -1,17 +1,15 @@
 package com.akurilo.weatherapi.actor_system;
 
 import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
 import akka.actor.ActorSelection;
 import dto.CenterDto;
+import dto.UserDto;
 
 import static akka.pattern.PatternsCS.ask;
 import static akka.pattern.PatternsCS.pipe;
 import static com.akurilo.weatherapi.WeatherApiApplication.TIMEOUT_GET_MESSAGE;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class WeatherStationMasterActor extends AbstractActor {
 
@@ -28,11 +26,17 @@ public class WeatherStationMasterActor extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(CenterDto.class, this::sendCenterDto)
+                .match(UserDto.class, this::sendUserDto)
                 .build();
     }
 
-    private void sendCenterDto(CenterDto centerDto) throws ExecutionException, InterruptedException {
+    private void sendCenterDto(CenterDto centerDto) {
         CompletableFuture<Object> future = ask(selection, centerDto, TIMEOUT_GET_MESSAGE).toCompletableFuture();
+        pipe(future, getContext().dispatcher()).to(sender());
+    }
+
+    private void sendUserDto(UserDto userDto){
+        CompletableFuture<Object> future = ask(selection, userDto, TIMEOUT_GET_MESSAGE).toCompletableFuture();
         pipe(future, getContext().dispatcher()).to(sender());
     }
 }
