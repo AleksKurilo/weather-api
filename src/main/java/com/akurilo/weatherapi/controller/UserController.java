@@ -1,7 +1,6 @@
 package com.akurilo.weatherapi.controller;
 
 import dto.UserDto;
-import enums.UserRole;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -16,7 +15,6 @@ public class UserController extends BaseController<UserDto> {
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     public Mono<UserDto> create(@RequestBody UserDto userDto) {
         userDto.setRequestType(POST);
-        System.out.println(UserRole.ADMIN.name());
         return getDtoMono(userDto);
     }
 

@@ -1,2 +1,12 @@
 server:
     port: 8080
+
+webfluxsecurity:
+  jjwt:
+    secret: mysecret
+    expiration: 28800
+  password:
+    encoder:
+      secret: mysecret
+      iteration: 1000
+      keylength: 256
