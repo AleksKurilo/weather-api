@@ -10,7 +10,7 @@ import static enums.RequestType.*;
 
 
 @RestController
-@RequestMapping("/centre")
+@RequestMapping("/center")
 public class CenterController extends BaseController<CenterDto> {
 
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)

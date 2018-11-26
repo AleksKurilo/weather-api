@@ -3,6 +3,7 @@ package com.akurilo.weatherapi.actor_system;
 import akka.actor.AbstractActor;
 import akka.actor.ActorSelection;
 import dto.CenterDto;
+import dto.LocationDto;
 import dto.UserDto;
 
 import static akka.pattern.PatternsCS.ask;
@@ -27,6 +28,7 @@ public class WeatherStationMasterActor extends AbstractActor {
         return receiveBuilder()
                 .match(CenterDto.class, this::sendCenterDto)
                 .match(UserDto.class, this::sendUserDto)
+                .match(LocationDto.class, this::sendLocationDto)
                 .build();
     }
 
@@ -37,6 +39,11 @@ public class WeatherStationMasterActor extends AbstractActor {
 
     private void sendUserDto(UserDto userDto){
         CompletableFuture<Object> future = ask(selection, userDto, TIMEOUT_GET_MESSAGE).toCompletableFuture();
+        pipe(future, getContext().dispatcher()).to(sender());
+    }
+
+    private void sendLocationDto(LocationDto locationDto){
+        CompletableFuture<Object> future = ask(selection, locationDto, TIMEOUT_GET_MESSAGE).toCompletableFuture();
         pipe(future, getContext().dispatcher()).to(sender());
     }
 }
