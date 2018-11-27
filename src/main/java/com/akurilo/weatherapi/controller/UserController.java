@@ -1,6 +1,8 @@
 package com.akurilo.weatherapi.controller;
 
+import com.akurilo.weatherapi.security.PBKDF2Encoder;
 import dto.UserDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -10,10 +12,14 @@ import static enums.RequestType.*;
 
 @RestController
 @RequestMapping(path = "/user")
+@RequiredArgsConstructor
 public class UserController extends BaseController<UserDto> {
+
+    private final PBKDF2Encoder passwordEncoder;
 
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
     public Mono<UserDto> create(@RequestBody UserDto userDto) {
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userDto.setRequestType(POST);
         return getDtoMono(userDto);
     }

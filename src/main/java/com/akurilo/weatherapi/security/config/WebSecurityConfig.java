@@ -28,7 +28,9 @@ public class WebSecurityConfig {
                 .securityContextRepository(securityContextRepository)
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                .pathMatchers("/**").permitAll()
+                .pathMatchers("/login").permitAll()
+                .pathMatchers("/**").permitAll()// for tests
+                .pathMatchers(HttpMethod.POST, "/user/create").permitAll()
                 //.pathMatchers("/user/**").hasAuthority("ADMIN") //example authority for role
                 .anyExchange().authenticated()
                 .and().build();

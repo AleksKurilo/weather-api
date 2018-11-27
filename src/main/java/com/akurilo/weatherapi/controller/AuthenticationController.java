@@ -2,12 +2,12 @@ package com.akurilo.weatherapi.controller;
 
 import com.akurilo.weatherapi.security.JWTUtil;
 import com.akurilo.weatherapi.security.PBKDF2Encoder;
+import com.akurilo.weatherapi.security.config.UserAuthorizationService;
 import dto.AuthRequestDto;
 import dto.AuthResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,13 +21,13 @@ public class AuthenticationController {
 
     private final PBKDF2Encoder passwordEncoder;
 
-    private final UserDetailsService userDetailsService;
+    private final UserAuthorizationService userAuthorizationService;
 
     @PostMapping(path = "login")
-    public Mono<ResponseEntity<AuthResponseDto>> auth(@RequestBody AuthRequestDto ar) {
-        return Mono.just(userDetailsService.loadUserByUsername(ar.getEmail()))
+    public Mono<ResponseEntity<AuthResponseDto>> login(@RequestBody AuthRequestDto authRequestDto) {
+        return userAuthorizationService.getUserByEmail(authRequestDto)
                 .map(userDetails -> {
-                    if (passwordEncoder.encode(ar.getPassword()).equals(userDetails.getPassword())) {
+                    if (passwordEncoder.encode(authRequestDto.getPassword()).equals(userDetails.getPassword())) {
                         return ResponseEntity.ok(new AuthResponseDto(jwtUtil.generateToken(userDetails)));
                     } else {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
