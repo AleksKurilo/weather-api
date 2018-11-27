@@ -2,10 +2,7 @@ package com.akurilo.weatherapi.actor_system;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorSelection;
-import dto.AuthRequestDto;
-import dto.LocationDto;
-import dto.StationDto;
-import dto.UserDto;
+import dto.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -31,6 +28,7 @@ public class WeatherStationMasterActor extends AbstractActor {
                 .match(UserDto.class, this::sendUserDto)
                 .match(AuthRequestDto.class, this::sendAuthRequest)
                 .match(LocationDto.class, this::sendLocationDto)
+                .match(CenterDto.class, this::sendCenterDto)
                 .build();
     }
 
@@ -51,6 +49,11 @@ public class WeatherStationMasterActor extends AbstractActor {
 
     private void sendLocationDto(LocationDto locationDto){
         CompletableFuture<Object> future = ask(selection, locationDto, TIMEOUT_GET_MESSAGE).toCompletableFuture();
+        pipe(future, getContext().dispatcher()).to(sender());
+    }
+
+    private void sendCenterDto(CenterDto centerDto) {
+        CompletableFuture<Object> future = ask(selection, centerDto, TIMEOUT_GET_MESSAGE).toCompletableFuture();
         pipe(future, getContext().dispatcher()).to(sender());
     }
 }
