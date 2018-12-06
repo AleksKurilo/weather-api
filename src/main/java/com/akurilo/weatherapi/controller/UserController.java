@@ -8,7 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 import static enums.RequestType.*;
+
+//import dto.UserDto;
 
 @RestController
 @RequestMapping(path = "/user")
@@ -18,14 +22,14 @@ public class UserController extends BaseController<UserDto> {
     private final PBKDF2Encoder passwordEncoder;
 
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-    public Mono<UserDto> create(@RequestBody UserDto userDto) {
+    public Mono<UserDto> create(@RequestBody @Valid UserDto userDto) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userDto.setRequestType(POST);
         return getDtoMono(userDto);
     }
 
     @PutMapping(path = "{id}/update", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-    public Mono<UserDto> update(@RequestBody UserDto userDto, @PathVariable Long id) {
+    public Mono<UserDto> update(@RequestBody @Valid UserDto userDto, @PathVariable Long id) {
         userDto.setId(id);
         userDto.setRequestType(PUT);
         return getDtoMono(userDto);

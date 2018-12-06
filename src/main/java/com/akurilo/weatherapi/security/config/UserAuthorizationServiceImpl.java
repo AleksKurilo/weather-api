@@ -49,5 +49,4 @@ public class UserAuthorizationServiceImpl implements UserAuthorizationService {
                     throw new UsernameNotFoundException("ERROR UsernameNotFoundException:", er);
                 });
     }
-
 }

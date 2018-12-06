@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 import static enums.RequestType.*;
 
 @RestController
@@ -13,7 +15,7 @@ import static enums.RequestType.*;
 public class CenterController extends BaseController<CenterDto> {
 
     @PostMapping(path = "/create", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
-    public Mono<CenterDto> create(@RequestBody CenterDto centerDto) {
+    public Mono<CenterDto> create(@RequestBody @Valid CenterDto centerDto) {
         centerDto.setRequestType(POST);
         return getDtoMono(centerDto);
     }

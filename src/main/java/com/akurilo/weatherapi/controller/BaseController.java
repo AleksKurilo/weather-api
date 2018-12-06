@@ -23,10 +23,7 @@ public abstract class BaseController <T extends BaseEntityDto> {
         return Mono
                 .fromFuture(message)
                 .flatMapMany(m -> Flux.fromIterable((List<T>) m))
-                .single()
-                .doOnError(er -> {
-                    throw new RuntimeException("ERROR:", er);
-                });
+                .single();
     }
 
     protected Flux<T> getDtoFlux(T dto){
@@ -34,9 +31,6 @@ public abstract class BaseController <T extends BaseEntityDto> {
         CompletableFuture<Object> message = ask(weatherStationMasterActor, dto, TIMEOUT_GET_MESSAGE).toCompletableFuture();
         return Mono
                 .fromFuture(message)
-                .flatMapMany(it -> Flux.fromIterable((List<T>) it))
-                .doOnError(er -> {
-                    throw new RuntimeException("ERROR:", er);
-                });
+                .flatMapMany(it -> Flux.fromIterable((List<T>) it));
     }
 }
