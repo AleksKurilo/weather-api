@@ -2,6 +2,7 @@ package com.akurilo.weatherapi.controller;
 
 
 import exception.NotFoundException;
+import exception.NotUniqueException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,4 +37,9 @@ public class ExceptionController {
         return new ResponseEntity<>(e.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(NotUniqueException.class)
+    @ResponseBody
+    public ResponseEntity<Object> handleNotUniqueException(NotUniqueException e) {
+        return new ResponseEntity<>(e.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT);
+    }
 }
